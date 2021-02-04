@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.formLogin()										// 로그인 form 사용
 				.loginPage("/user/login")								// 로그인 페이지
 				.successHandler(customAuthenticationSuccessHandler)	// 로그인 성공시 핸들러
-				//.failureHandler(customAuthenticationFailureHandler)	// 로그인 실패시 핸들러
+				.failureHandler(customAuthenticationFailureHandler)	// 로그인 실패시 핸들러
 				.usernameParameter("username")						// 기본 아이디(username) 매핑 값 변경 시 사용(여기선 변경안함)
 				.passwordParameter("password")						// 마찬가지 기본 비밀번호 변경
 				.permitAll()

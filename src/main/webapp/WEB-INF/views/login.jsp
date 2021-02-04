@@ -55,6 +55,7 @@
 								<button id="loginBtn" name="loginBtn" class="btn btn-success btn-block">Login</button>
 							</fieldset>
 						</form>
+						<div class="text-center small mt-2" id="loginMsg" style="color: red"></div>
 					</div>
 				</div>
 			</div>
@@ -101,8 +102,7 @@
 	                	}
 	                	else if(response.code == "999") {
 	                		alert(response.message);
-	                		console.log(response);
-	                		location.href="/user/login";
+	                		$('#loginMsg').html('<span style="color: red;">비밀번호가 틀렸습니다.</span>');
 	                    }
 	                }
 				})
