@@ -2,6 +2,8 @@ package com.kw.cine.auth.service;
 
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,7 +25,8 @@ public class SendEmailService{
     MemberRepository memberRepository;
 
     private JavaMailSender mailSender;
-    private static final String FROM_ADDRESS = "skarhs1234@gmail.com";
+    private static final String FROM_ADDRESS = "아이디@gmail.com";
+    private static final Logger logger = LogManager.getLogger(SendEmailService.class);
 
 
 
@@ -31,9 +34,9 @@ public class SendEmailService{
         String str = getTempPassword();
         MailDto dto = new MailDto();
         dto.setAddress(userEmail);
-        dto.setTitle(userEmail+"님의 HOTTHINK 임시비밀번호 안내 이메일 입니다.");
-        dto.setMessage("안녕하세요. HOTTHINK 임시비밀번호 안내 관련 이메일 입니다." + "[" + userEmail + "]" +"님의 임시 비밀번호는 "
-        + str + " 입니다.");
+        dto.setTitle("CINE[MCLAB] - 임시 비밀번호 안내 이메일\n");
+        dto.setMessage("안녕하세요.\n CINE[MCLAB] 임시비밀번호 안내 관련 이메일 입니다.\n"
+        				+ "[" + userEmail + "]" +"님의 임시 비밀번호는 [" + str + "]입니다.");
         updatePassword(str,userEmail);
         return dto;
     }
@@ -64,7 +67,7 @@ public class SendEmailService{
     }
     
     public void mailSend(MailDto mailDto){
-        System.out.println("이멜 전송 완료!");
+        logger.info("이메일 전송 폼 생성...");
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(mailDto.getAddress());
         message.setFrom(SendEmailService.FROM_ADDRESS);
@@ -72,5 +75,6 @@ public class SendEmailService{
         message.setText(mailDto.getMessage());
 
         mailSender.send(message);
+        logger.info("이메일 전송 완료.");
     }
 }

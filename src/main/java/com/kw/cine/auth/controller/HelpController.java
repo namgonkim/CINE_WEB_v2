@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,17 +36,21 @@ public class HelpController {
 	public @ResponseBody Map<String, Boolean> pw_find(String userEmail) {
 		Map<String, Boolean> json = new HashMap<>();
 		boolean pwFindCheck = memberService.userEmailCheck(userEmail);
-
-		System.out.println(pwFindCheck);
+		logger.info("Email Find : " + pwFindCheck);
 		json.put("check", pwFindCheck);
 		return json;
 	}
 
 	// 등록된 이메일로 임시비밀번호를 발송하고 발송된 임시비밀번호로 사용자의 pw를 변경하는 컨트롤러
-	@PostMapping("/check/findPw/sendEmail")
-	public @ResponseBody void sendEmail(String userEmail) {
+	
+	@GetMapping("/help/sendEmail")
+	public @ResponseBody Map<String, Boolean> sendEmail(String userEmail) {
+		Map<String, Boolean> json = new HashMap<>();
+		logger.info("Send Email : " + userEmail);
 		MailDto maildto = sendEmailService.createMailAndChangePassword(userEmail);
 		sendEmailService.mailSend(maildto);
+		json.put("check", true);
+		return json;
 
 	}
 

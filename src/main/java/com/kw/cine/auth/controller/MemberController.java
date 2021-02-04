@@ -58,21 +58,7 @@ public class MemberController {
 			request.getSession().setAttribute("prevPage", referer);
 
 		logger.info("Referer site :" + referer);
-		/*
-		logger.info("login page access");
-		RequestCache requestCache = new HttpSessionRequestCache();
-		SavedRequest savedRequest = requestCache.getRequest(request, response);
-		model.addAttribute("title", "Admin login");
-		logger.info(savedRequest.getRedirectUrl());
-		try {
-			// 이전 페이지가 없는 경우?
-			request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
-		} catch(NullPointerException e) {
-			
-			request.getSession().setAttribute("prevPage", "/");
-		}
-		logger.info(response.toString());
-		*/
+
 		return "/login";
 	}
 	
