@@ -37,7 +37,12 @@
 		<section class="page-section">
 			<div class="container ">
 				<div class="row">
-					<h2>New</h2>
+					<div class="col-md-12">
+						<h2 class="title-section">
+							<span class="title-regular">NEW</span>
+						</h2>
+						<hr class="title-underline" />
+					</div>
 
 					<!-- 박사 객체 -->
 					<div class="col-md-8 col-md-push-4">
@@ -91,14 +96,39 @@
 								<label for="inputFile" class=""><strong>이미지</strong></label>
 								<div class="">
 									<div class="custom-file" id="inputFile">
-										<input name="imgfile" type="file" class="custom-file-input" id="imgfile" accept="image/png, image/jpeg, image/jpg">
+										<input name="imgfile" type="file" class="custom-file-input" id="imgfile" accept="image/png, image/jpeg, image/jpg" onchange="InputImage(event);">
 										<label class="custom-file-label" for="imgfile">파일을 선택해 주세요.</label>
+										<div id="image_container"></div>
 									</div>
 									<script>
+										// 커스텀 이미지 업로드
 					                	$(".custom-file-input").on("change", function() {
 					                		var fileName = $(this).val().split("\\").pop();
 					                		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 					                	});
+					                	
+					                	// 이미지 업로드 미리보기
+					                	function InputImage(event) {
+					                		if(event.target.files && event.target.files[0]) {
+					                			var reader = new FileReader();
+					                		}
+					                		// 미리 볼 수 있도록 해당 위치에 이미지 어트리뷰트 추가
+					                		reader.onload = function(event) {
+					                			
+					                			var img = document.createElement("img");
+					                			img.setAttribute("src", event.target.result);
+					                			img.setAttribute("width", "365px");
+					                			img.setAttribute("height", "376px");
+					                			
+					                			var imgdata = document.querySelector("div#image_container");
+					                			var imgdataNode = imgdata.childNodes;
+					                			if(imgdataNode.length != 0) imgdataNode[0].remove();
+					                			imgdata.appendChild(img);
+					                			console.log(imgdata.childNodes[0]);
+					                		};
+					                		// 이미지 read
+					                		reader.readAsDataURL(event.target.files[0]);
+					                	}
 					                </script>
 								</div>
 

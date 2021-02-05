@@ -48,7 +48,7 @@ public class MemberService implements UserDetailsService {
 		Optional<MemberEntity> userEntityWrapper = memberRepository.findByEmail(userEmail);
 		if(!userEntityWrapper.isPresent()) {
 			logger.info("[WARNING] - 계정 정보가 존재하지 않습니다.");
-			throw new BadCredentialsException("[Email: "+userEmail+"] Not Found.");
+			throw new UsernameNotFoundException("[Email: "+userEmail+"] Not Found.");
 		}
 		MemberEntity userEntity = userEntityWrapper.get();
 		List<GrantedAuthority> authorities = new ArrayList<>();

@@ -97,8 +97,7 @@ public class OurteamController {
 	 * 팀원 등록 POST 변경할 사항: AJAX 콜을 통한 비동기 post 처리로 변환할 것, 이미지 업로드 기능 추가할 것
 	 */
 	@PostMapping("/admin/ourteam/new")
-	public String postOurteamNew(@RequestParam("imgfile") MultipartFile files, OurteamDto teamDto,
-			HttpServletRequest request) {
+	public String postOurteamNew(@RequestParam("imgfile") MultipartFile files, OurteamDto teamDto) {
 		try {
 			
 			String oriFilename = files.getOriginalFilename(); // 파일 원래 이름
