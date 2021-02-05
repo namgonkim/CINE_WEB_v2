@@ -49,24 +49,16 @@ public class MemberController {
 	
 	// 관리자 로그인 페이지
 	@GetMapping("/user/login")
-	public String adminLogin(Model model, HttpServletRequest request, HttpServletResponse response) {
+	public String adminLogin(HttpServletRequest request) {
+		logger.info("Login Page access");
 		String referer = request.getHeader("Referer");
-		if(referer == null) {
+		if (referer == null) {
 			request.getSession().setAttribute("prevPage", "/");
-		}
-		else
+		} else
 			request.getSession().setAttribute("prevPage", referer);
 
 		logger.info("Referer site :" + referer);
-
 		return "/login";
-	}
-	
-	// 관리자 로그인 결과 페이지
-	@GetMapping("/user/login/result")
-	public String adminLoginResult() {
-		logger.info("login success!");
-		return "/loginSuccess";
 	}
 	
 	// 로그아웃 결과 페이지

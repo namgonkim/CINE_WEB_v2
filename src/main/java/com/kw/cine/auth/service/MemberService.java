@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -27,11 +30,13 @@ import lombok.AllArgsConstructor;
 public class MemberService implements UserDetailsService {
 
 	private MemberRepository memberRepository;
+	private static final Logger logger = LogManager.getLogger(MemberService.class);
 
 	// 회원 등록
 	@Transactional
 	public Long joinUser(MemberDto memberDto) {
 		// 비밀번호 암호화
+		logger.info("관리자 아이디를 생성합니다. - " + memberDto.getEmail());
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
 
@@ -41,8 +46,11 @@ public class MemberService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
 		Optional<MemberEntity> userEntityWrapper = memberRepository.findByEmail(userEmail);
+		if(!userEntityWrapper.isPresent()) {
+			logger.info("[WARNING] - 계정 정보가 존재하지 않습니다.");
+			throw new BadCredentialsException("[Email: "+userEmail+"] Not Found.");
+		}
 		MemberEntity userEntity = userEntityWrapper.get();
-
 		List<GrantedAuthority> authorities = new ArrayList<>();
 
 		if (("admin@example.com").equals(userEmail)) {

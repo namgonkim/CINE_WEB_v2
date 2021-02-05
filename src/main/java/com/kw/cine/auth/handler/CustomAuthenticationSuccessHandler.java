@@ -15,11 +15,11 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +34,7 @@ import com.kw.cine.auth.dto.ResponseDataStatus;
 @Component
 public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler  {
 
+	private static final Logger logger = LogManager.getLogger(CustomAuthenticationSuccessHandler.class);
 
 	/**
 	 * 로그인이 성공하고나서 로직
@@ -41,6 +42,8 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
+    	
+    	logger.info("관리자 아이디 로그인을 성공하였습니다.");
     	
     	ObjectMapper mapper = new ObjectMapper();	//JSON 변경용
     	
@@ -56,8 +59,9 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
     	
     	response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
+        logger.info(mapper.writeValueAsString(responseDataDto).toString());
         response.getWriter().print(mapper.writeValueAsString(responseDataDto));
         response.getWriter().flush();
-        
+        //response.sendRedirect(prevPage);
     }
 }
