@@ -17,9 +17,8 @@
 
 	<div class="container">
 		<!-- Modal -->
-		<div class="" id="myModal" role="dialog">
-			<div class="">
-
+		<div class="page-section" id="myModal" role="dialog">
+			<div class="row">
 				<!-- Modal content-->
 				<div class="content">
 					<div class="header" style="padding: 35px 50px;">
@@ -39,14 +38,10 @@
 								<input type="text" class="form-control" name="userEmail" id="userEmail" placeholder="가입시 등록한 이메일을 입력하세요.">
 							</div>
 							<button type="button" class="btn btn-success btn-block" id="checkEmail">OK</button>
+							<a type="button" class="btn btn-danger btn-block" href="/user/login" data-dismiss="modal">Cancel</a>
 						</form>
 						<hr>
 						<div class="text-center small mt-2" id="checkMsg" style="color: red"></div>
-					</div>
-					<div class="footer">
-						<button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal">
-							<span class="glyphicon glyphicon-remove"></span> Cancel
-						</button>
 					</div>
 				</div>
 

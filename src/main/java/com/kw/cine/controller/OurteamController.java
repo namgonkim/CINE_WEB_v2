@@ -1,16 +1,9 @@
 package com.kw.cine.controller;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-
-import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kw.cine.auth.service.MemberService;
-import com.kw.cine.dto.FileDto;
+import com.kw.cine.dto.FilesDto;
 import com.kw.cine.dto.OurteamDto;
 import com.kw.cine.service.FileService;
 import com.kw.cine.service.OurteamService;
-import com.kw.cine.util.MD5Generator;
 
 import lombok.AllArgsConstructor;
 
@@ -99,41 +91,19 @@ public class OurteamController {
 	@PostMapping("/admin/ourteam/new")
 	public String postOurteamNew(@RequestParam("imgfile") MultipartFile files, OurteamDto teamDto) {
 		try {
-			
-			String oriFilename = files.getOriginalFilename(); // 파일 원래 이름
-			String filename = new MD5Generator(oriFilename).toString(); // 파일 변환 이름
-			String sourceFileNameExtension = FilenameUtils.getExtension(oriFilename).toLowerCase(); // 파일 확장자
-			// 변환된 파일 이름에 확장자를 붙인다
-			filename = filename + "." + sourceFileNameExtension;
-			// 실행되는 위치의 'images' 폴더에 파일이 저장된다.
-			
-			String savePath = System.getProperty("user.dir") + "\\images";
-			
-			// 파일이 저장되는 폴더가 없다면 폴더를 생성
-			if (!new File(savePath).exists()) {
-				try {
-					new File(savePath).mkdir();
-				} catch (Exception e) { // 이미지 파일을 저장할 폴더가 제대로 생성되지 않은 경우
-					logger.error("시스템 에러, 정상적으로 이미지 폴더가 생성되지 않았습니다.");
-					logger.error(e.getMessage());
-					e.getStackTrace();
-					return "/admin/ourteam/new";
+			if(!files.isEmpty()) {
+				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
+				if(fileDto == null) {
+					return "redirect:/admin/ourteam/new";
 				}
+				Long fileId = fileService.saveFile(fileDto); // 생성된 파일 DB에 저장
+				if(fileId == null) {
+					return "redirect:/admin/ourteam/new";
+				}
+				teamDto.setImgfileId(fileId);
+				teamDto.setImgfileSrc(fileDto.getFilename());
 			}
-			 
-			// 파일 경로 저장
-			String filePath = savePath + "\\" + filename;
-			files.transferTo(new File(filePath));
-			// Dto에 저장
-			FileDto fileDto = new FileDto();
-			fileDto.setOrifilename(oriFilename);
-			fileDto.setFilename(filename);
-			fileDto.setFilepath(filePath);
-			
-			// 파일 서비스
-			Long fileId = fileService.saveFile(fileDto);
-			teamDto.setImgfileId(fileId);
-			teamDto.setImgfileSrc(fileDto.getFilename());
+			else logger.info("프로필 이미지가 없는 상태로 저장됩니다.");
 			int retCode = ourteamService.saveNew(teamDto);
 			if (retCode == -1) {
 				logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");
@@ -166,7 +136,8 @@ public class OurteamController {
 		} else {
 			logger.info(teamDto.getName() + "님의 정보를 수정합니다.");
 			mv = new ModelAndView("ourteam/modify");
-			mv.addObject("title", "Update Member");
+			mv.addObject("title", "Update");
+			mv.addObject("category", "Update People");
 			mv.addObject("teamDto", teamDto);
 			return mv;
 		}
@@ -176,15 +147,36 @@ public class OurteamController {
 	 * 팀원 수정 POST 변경할 사항: AJAX 콜을 통한 비동기 post 처리로 변환할 것, 이미지 업로드 기능 추가할 것
 	 */
 	@PutMapping("/admin/ourteam/modify/{idx}")
-	public String ourteamUpdate(OurteamDto teamDto) {
-		// teamDto.setImgfile("https://placeimg.com/365/376/any");
-		int retCode = ourteamService.ourteamUpdate(teamDto);
-		if (retCode == -1) {
-			logger.error("시스템 에러, 정상적으로 수정되지 않았습니다.");
-			return "/admin/ourteam/modify/{idx}";
-		} else {
-			logger.info(teamDto.getName() + "님의 정보가 수정되었습니다.");
-			return "redirect:/ourteam?pid=" + retCode;
+	public String ourteamUpdate(@RequestParam("imgfile") MultipartFile files, OurteamDto teamDto) {
+		try {
+			if(!files.isEmpty()) {
+				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
+				if(fileDto == null) {
+					return "redirect:/admin/ourteam/new";
+				}
+				Long fileId = fileService.saveFile(fileDto); // 생성된 파일 DB에 저장
+				if(fileId == null) {
+					return "redirect:/admin/ourteam/new";
+				}
+				teamDto.setImgfileId(fileId);
+				teamDto.setImgfileSrc(fileDto.getFilename());
+			}
+			else logger.info("프로필 이미지가 없는 상태로 저장됩니다.");
+			int retCode = ourteamService.ourteamUpdate(teamDto);
+			if (retCode == -1) {
+				logger.error("시스템 에러, 정상적으로 수정되지 않았습니다.");
+				return "redirect:/admin/ourteam/modify/{idx}";
+			} else {
+				logger.info(teamDto.getName() + "님의 정보가 수정되었습니다.");
+				return "redirect:/ourteam?pid=" + retCode;
+			}
+
+		} catch (Exception e) {
+			// 이미지 파일 저장이 안된 경우
+			logger.error("시스템 에러, 정상적으로 이미지파일이 저장되지 않았습니다.");
+			logger.error(e.getMessage());
+			e.getStackTrace();
+			return "redirect:/admin/ourteam/new";
 		}
 	}
 

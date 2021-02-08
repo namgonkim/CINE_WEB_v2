@@ -1,6 +1,6 @@
 package com.kw.cine.dto;
 
-import com.kw.cine.domain.entity.File;
+import com.kw.cine.domain.entity.Files;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,14 +12,14 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class FileDto {
+public class FilesDto {
 	private Long id;
 	private String orifilename;
 	private String filename;
 	private String filepath;
 	
-	public File toEntity() {
-		File file = File.builder()
+	public Files toEntity() {
+		Files file = Files.builder()
 				.id(id).orifilename(orifilename).filename(filename).filepath(filepath)
 				.build();
 		
@@ -27,7 +27,7 @@ public class FileDto {
 	}
 	
 	@Builder
-	public FileDto(Long id, String orifilename, String filename, String filepath) {
+	public FilesDto(Long id, String orifilename, String filename, String filepath) {
 		this.id = id;
 		this.orifilename = orifilename;
 		this.filename = filename;

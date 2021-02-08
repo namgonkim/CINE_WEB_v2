@@ -61,6 +61,9 @@
 						<div class="text-center small mt-4" id="loginMsg" style="color: red"></div>
 					</div>
 				</div>
+				<div>
+					<a class="find_pass" style="float:right;" href="/help">비밀번호 분실</a>
+				</div>
 			</div>
 		</div>
 	</div>

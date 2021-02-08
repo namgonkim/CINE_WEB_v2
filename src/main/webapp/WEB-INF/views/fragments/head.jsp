@@ -12,7 +12,7 @@
 
 <!-- Bootstrap core CSS -->
 <!-- <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
 <link href="/bootstrap/css/carousel.css" rel="stylesheet">
 <link href="/bootstrap/fonts/glyphicons-halflings-regular.eot" rel="stylesheet">

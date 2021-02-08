@@ -116,9 +116,10 @@
 					                		reader.onload = function(event) {
 					                			
 					                			var img = document.createElement("img");
+					                			img.setAttribute("class", "img-responsive");
 					                			img.setAttribute("src", event.target.result);
-					                			img.setAttribute("width", "365px");
-					                			img.setAttribute("height", "376px");
+					                			img.setAttribute("width", "560px");
+					                			img.setAttribute("height", "431px");
 					                			
 					                			var imgdata = document.querySelector("div#image_container");
 					                			var imgdataNode = imgdata.childNodes;
