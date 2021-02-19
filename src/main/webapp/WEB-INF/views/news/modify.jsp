@@ -21,7 +21,8 @@
 				<div class="col-md-12">
 					<ul class="breadcrumb">
 						<li><a href="/">Home</a></li>
-						<li>News</li>
+						<li><a href="/">News</a></li>
+						<li>Modify</li>
 					</ul>
 				</div>
 			</div>
@@ -36,46 +37,91 @@
 	<!-- content -->
 	<section class="page-section">
 		<div class="container ">
+			<h2 class="title-section">
+				<span class="title-regular">Modify</span>
+			</h2>
+			<hr class="title-underline" />
 			<div class="row">
-				<h2>Modify</h2>
+
 				<form class="form" action="/admin/news/modify/${newsDto.idx }" method="post" enctype="multipart/form-data">
-					<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"/>
+					<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }" />
 					<input type="hidden" name="_method" value="put" />
-					<input type="hidden" name="idx" value="${newsDto.idx}"/>
+					<input type="hidden" name="idx" value="${newsDto.idx}" />
+
+					<!-- image upload -->
 					<div class="col-md-10">
-					<!-- 
-						<input type="file" name="imgFile" id="imgFile" accept="image/*" />
-						<img id="image_section" src="${newsDto.imgfile} " alt="" width="300" />
-						
-						<div id="img">
-							<script> 
-			                function readURL(input){
-			                  if(input.files && input.files[0]){
-			                    var reader = new FileReader();
-			                    reader.onload = function(e){
-			                      $('#image_section').attr('src', e.target.result);
-			                    }
-			                    reader.readAsDataURL(input.files[0]);
-			                  }
-			                }
-			                $("#imgFile").change(function(){
-			                  readURL(this);
-			                });
-			                </script>
+						<label for="inputFile" class=""><strong>이미지</strong></label>
+						<div class="">
+							<div class="custom-file" id="inputFile">
+								<input name="imgfile" type="file" class="custom-file-input" id="imgfile" accept="image/png, image/jpeg, image/jpg" onchange="InputImage(event);">
+								<label class="custom-file-label" for="imgfile">파일을 선택해 주세요.</label>
+								<div id="image_container">
+									<c:if test="${newsDto.imgfileSrc != null}">
+										<img class="img-responsive" src="/images/${newsDto.imgfileSrc }" width="560px" height="431px" />
+									</c:if>
+
+								</div>
+								<div id="image_delete">
+									<button type="button" class="btn btn-dark btn-sm" onclick="Image_delete();">삭제하기</button>
+									<script>
+												function Image_delete() {
+													var imgdata = document.querySelector("div#image_container");
+													for(var i=0;i<imgdata.childNodes.length;i++){
+														imgdata.removeChild(imgdata.childNodes[i]);
+													}
+												}
+											</script>
+								</div>
+								<br>
+							</div>
+							<script>
+										// 커스텀 이미지 업로드
+					                	$(".custom-file-input").on("change", function() {
+					                		var fileName = $(this).val().split("\\").pop();
+					                		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+					                	});
+					                	
+					                	// 이미지 업로드 미리보기
+					                	function InputImage(event) {
+					                		if(event.target.files && event.target.files[0]) {
+					                			var reader = new FileReader();
+					                		}
+					                		// 미리 볼 수 있도록 해당 위치에 이미지 어트리뷰트 추가
+					                		reader.onload = function(event) {
+					                			
+					                			var img = document.createElement("img");
+					                			img.setAttribute("class", "img-responsive");
+					                			img.setAttribute("src", event.target.result);
+					                			img.setAttribute("width", "560px");
+					                			img.setAttribute("height", "431px");
+					                			
+					                			var imgdata = document.querySelector("div#image_container");
+					                			var imgdataNode = imgdata.childNodes;
+					                			if(imgdataNode.length != 0) imgdataNode[0].remove();
+					                			imgdata.appendChild(img);
+					                			console.log(imgdata.childNodes[0]);
+					                		};
+					                		// 이미지 read
+					                		reader.readAsDataURL(event.target.files[0]);
+					                	}
+					                </script>
 						</div>
-						 -->
-						<div>
-							<label for="title">Title</label>
-							<input type="text" id="title" name="title" value="${newsDto.title }">
-						</div>
-						<div>
-							<label for="content">Content</label>
-							<textarea id="content" name="content" cols="100" rows="20">${newsDto.content}</textarea>
-						</div>
-						<div>
-							<button type="submit">Update</button>
-						</div>
+
 					</div>
+					<!-- image upload end -->
+
+					<div>
+						<label for="title">Title</label>
+						<input type="text" id="title" name="title" value="${newsDto.title }">
+					</div>
+					<div>
+						<label for="content">Content</label>
+						<textarea id="content" name="content" cols="100" rows="20">${newsDto.content}</textarea>
+					</div>
+					<div>
+						<button type="submit">Update</button>
+					</div>
+
 				</form>
 			</div>
 		</div>

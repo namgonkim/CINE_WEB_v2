@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kw.cine.dto.FilesDto;
 import com.kw.cine.dto.ResearchDto;
+import com.kw.cine.service.FileService;
 import com.kw.cine.service.ResearchService;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +36,7 @@ public class ResearchController {
 	private static final Logger logger = LogManager.getLogger(ResearchController.class);
 
 	private ResearchService researchService;
+	private FileService fileService;
 
 	@GetMapping("/research")
 	public ModelAndView researchList(@RequestParam("pid") int pid) {
@@ -74,17 +78,39 @@ public class ResearchController {
 
 	 // 새 리서치 등록 POST
 	@PostMapping("/admin/research/new")
-	public String saveResearchNew(ResearchDto rechDto) {
-		rechDto.setImgfile("https://placeimg.com/560/431/any");
-		int retCode = researchService.saveNew(rechDto);
-		if (retCode == -1) {
-			logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");
-			return "/admin/research/new";
-		} else {
-			logger.info(rechDto.getTitle() + "이 새로운 연구 자료로 등록되었습니다.");
-			logger.info(retCode);
-			return "redirect:/research?pid=" + retCode;
+	public String saveResearchNew(@RequestParam("imgfile") MultipartFile files, ResearchDto rechDto) {
+		try {
+			if(!files.isEmpty()) {
+				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
+				if(fileDto == null) {
+					return "redirect:/admin/research/new";
+				}
+				Long fileId = fileService.saveFile(fileDto); // 생성된 파일 DB에 저장
+				if(fileId == null) {
+					return "redirect:/admin/research/new";
+				}
+				rechDto.setImgfileId(fileId);
+				rechDto.setImgfileSrc(fileDto.getFilename());
+			}
+			else logger.info("프로필 이미지가 없는 상태로 저장됩니다.");
+			int retCode = researchService.saveNew(rechDto);
+			if (retCode == -1) {
+				logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");
+				return "/admin/research/new";
+			} else {
+				logger.info(rechDto.getTitle() + "이 새로운 연구 자료로 등록되었습니다.");
+				logger.info(retCode);
+				return "redirect:/research?pid=" + retCode;
+			}
+
+		} catch (Exception e) {
+			// 이미지 파일 저장이 안된 경우
+			logger.error("시스템 에러, 정상적으로 이미지파일이 저장되지 않았습니다.");
+			logger.error(e.getMessage());
+			e.getStackTrace();
+			return "redirect:/admin/research/new";
 		}
+		
 	}
 
 	// 리서치 수정 GET
@@ -108,16 +134,39 @@ public class ResearchController {
 
 	// 리서치 수정 POST
 	@PutMapping("/admin/research/modify/{idx}")
-	public String researchUpdate(ResearchDto rechDto) {
-		// rechDto.setImgfile("https://placeimg.com/365/376/any");
-		int retCode = researchService.researchUpdate(rechDto);
-		if (retCode == -1) {
-			logger.error("시스템 에러, 정상적으로 수정되지 않았습니다.");
-			return "/admin/research/modify/{idx}";
-		} else {
-			logger.info(rechDto.getTitle() + "의 연구자료 정보가 수정되었습니다.");
-			return "redirect:/research?pid=" + retCode;
+	public String researchUpdate(@RequestParam("imgfile") MultipartFile files, ResearchDto rechDto) {
+		
+		try {
+			if(!files.isEmpty()) {
+				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
+				if(fileDto == null) {
+					return "redirect:/admin/research/modify/{idx}";
+				}
+				Long fileId = fileService.saveFile(fileDto); // 생성된 파일 DB에 저장
+				if(fileId == null) {
+					return "redirect:/admin/research/modify/{idx}";
+				}
+				rechDto.setImgfileId(fileId);
+				rechDto.setImgfileSrc(fileDto.getFilename());
+			}
+			else logger.info("프로필 이미지가 없는 상태로 저장됩니다.");
+			int retCode = researchService.researchUpdate(rechDto);
+			if (retCode == -1) {
+				logger.error("시스템 에러, 정상적으로 수정되지 않았습니다.");
+				return "/admin/research/modify/{idx}";
+			} else {
+				logger.info(rechDto.getTitle() + "의 연구자료 정보가 수정되었습니다.");
+				return "redirect:/research?pid=" + retCode;
+			}
+
+		} catch (Exception e) {
+			// 이미지 파일 저장이 안된 경우
+			logger.error("시스템 에러, 정상적으로 이미지파일이 저장되지 않았습니다.");
+			logger.error(e.getMessage());
+			e.getStackTrace();
+			return "redirect:/admin/research/modify/{idx}";
 		}
+		
 	}
 
 	// 리서치 삭제

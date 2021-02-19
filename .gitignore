@@ -12,8 +12,12 @@ tmp/
 *~.nib
 local.properties
 application.properties
+target/
+.project
 .settings/
+images/*.png
 .loadpath
+.classpath
 .recommenders
 .idea
 *.iml

@@ -20,7 +20,7 @@
 					<ul class="breadcrumb">
 						<li><a href="/">Home</a></li>
 						<li><a href="#">People</a></li>
-						<li>OurTeam</li>
+						<li>New</li>
 					</ul>
 				</div>
 			</div>

@@ -96,7 +96,12 @@
 						<div class="col-md-4 col-md-pull-8 ">
 							<div class="row">
 								<div class="col-md-10">
+									<c:if test='${team.imgfileSrc == ""}'>
+										<img class="img-responsive" src="http://placehold.it/560x431?text=NoImage" alt="" />
+									</c:if>
+									<c:if test='${team.imgfileSrc != ""}'>
 									<img class="img-responsive" src="/images/${team.imgfileSrc }" alt="" width="560px" height="431px"/>
+									</c:if>
 								</div>
 								<div class="col-md-10">
 									<br />

@@ -28,9 +28,14 @@ public class PublicationsService {
 		// 빌더를 통해 Entity 객체 데이터를 Dto에도 전달
 		for (Publications publicationsEntity : publList) {
 			// Dto 빌드
-			PublicationsDto publicationsDto = PublicationsDto.builder().idx(publicationsEntity.getIdx())
-					.year(publicationsEntity.getYear()).content(publicationsEntity.getContent())
-					.imgfile(publicationsEntity.getImgfile()).pid(publicationsEntity.getPid()).build();
+			PublicationsDto publicationsDto = PublicationsDto.builder()
+					.idx(publicationsEntity.getIdx())
+					.year(publicationsEntity.getYear())
+					.content(publicationsEntity.getContent())
+					.imgfileId(publicationsEntity.getImgfileId())
+					.imgfileSrc(publicationsEntity.getImgfileSrc())
+					.pid(publicationsEntity.getPid())
+					.build();
 			// 리스트에 추가
 			publDtoList.add(publicationsDto);
 		}
@@ -49,10 +54,24 @@ public class PublicationsService {
 	public PublicationsDto getPublications(Long idx) {
 		// 팀원 중에서 수정할 팀원을 골라 가져옴
 		Optional<Publications> publicationsEntityWrapper = publicationsRepo.findById(idx);
+		if(!publicationsEntityWrapper.isPresent()) {
+			return null;
+			/*
+			PublicationsDto nonDto = PublicationsDto.builder()
+					.retcode("409") // DB 충돌, 수정하는 중간에 삭제를 한다면? -> 충돌 코드
+					.build();
+			return nonDto;
+			*/
+		}
 		Publications publicationsEntity = publicationsEntityWrapper.get();
 
-		PublicationsDto publicationsDto = PublicationsDto.builder().idx(publicationsEntity.getIdx()).year(publicationsEntity.getYear())
-				.content(publicationsEntity.getContent()).imgfile(publicationsEntity.getImgfile()).pid(publicationsEntity.getPid())
+		PublicationsDto publicationsDto = PublicationsDto.builder()
+				.idx(publicationsEntity.getIdx())
+				.year(publicationsEntity.getYear())
+				.content(publicationsEntity.getContent())
+				.imgfileId(publicationsEntity.getImgfileId())
+				.imgfileSrc(publicationsEntity.getImgfileSrc())
+				.pid(publicationsEntity.getPid())
 				.build();
 
 		return publicationsDto;

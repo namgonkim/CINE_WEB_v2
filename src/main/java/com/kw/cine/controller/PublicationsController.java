@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kw.cine.dto.FilesDto;
 import com.kw.cine.dto.PublicationsDto;
+import com.kw.cine.service.FileService;
 import com.kw.cine.service.PublicationsService;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +28,7 @@ public class PublicationsController {
 	private static final Logger logger = LogManager.getLogger(PublicationsController.class);
 
 	private PublicationsService publicationsService;
+	private FileService fileService;
 
 	@GetMapping("/publications")
 	public ModelAndView pagePublications(@RequestParam("pid") int pid) {
@@ -65,17 +69,39 @@ public class PublicationsController {
 
 	// 새 퍼블리케이션 등록 POST
 	@PostMapping("/admin/publications/new")
-	public String savePublicationsNew(PublicationsDto publDto) {
-		publDto.setImgfile("https://placeimg.com/560/431/any");
-		int retCode = publicationsService.saveNew(publDto);
-		if (retCode == -1) {
-			logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");
-			return "/admin/publications/new";
-		} else {
-			logger.info(publDto.getIdx() + "이 새로운 퍼블리케이션 자료로 등록되었습니다.");
-			logger.info(retCode);
-			return "redirect:/publications?pid=" + retCode;
+	public String savePublicationsNew(@RequestParam("imgfile") MultipartFile files, PublicationsDto publDto) {
+		try {
+			if (!files.isEmpty()) {
+				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
+				if (fileDto == null) {
+					return "redirect:/admin/publications/new";
+				}
+				Long fileId = fileService.saveFile(fileDto); // 생성된 이미지파일 DB에 저장
+				if (fileId == null) {
+					return "redirect:/admin/publications/new";
+				}
+				publDto.setImgfileId(fileId);
+				publDto.setImgfileSrc(fileDto.getFilename());
+			} else
+				logger.info("[publications] 항목의 이미지가 없는 상태로 저장됩니다.");
+			int retCode = publicationsService.saveNew(publDto);
+			if (retCode == -1) {
+				logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");
+				return "/admin/publications/new";
+			} else {
+				logger.info(publDto.getIdx() + "이 새로운 퍼블리케이션 자료로 등록되었습니다.");
+				logger.info(retCode);
+				return "redirect:/publications?pid=" + retCode;
+			}
+
+		} catch (Exception e) {
+			// 이미지 파일 저장, publication 등록이 안되는 경우
+			logger.error("[Publications ERROR] Where: new, 정상적으로 생성되지 않았습니다.");
+			logger.error(e.getMessage());
+			e.getStackTrace();
+			return "redirect:/admin/publications/new";
 		}
+
 	}
 
 	// 퍼블리케이션 수정 GET
@@ -99,16 +125,39 @@ public class PublicationsController {
 
 	// 퍼블리케이션 수정 POST
 	@PutMapping("/admin/publications/modify/{idx}")
-	public String publicationsUpdate(PublicationsDto publDto) {
-		// rechDto.setImgfile("https://placeimg.com/365/376/any");
-		int retCode = publicationsService.publicationsUpdate(publDto);
-		if (retCode == -1) {
-			logger.error("시스템 에러, 정상적으로 수정되지 않았습니다.");
-			return "/admin/publications/modify/{idx}";
-		} else {
-			logger.info(publDto.getIdx() + "의 퍼블리케이션 자료 정보가 수정되었습니다.");
-			return "redirect:/publications?pid=" + retCode;
+	public String publicationsUpdate(@RequestParam("imgfile") MultipartFile files, PublicationsDto publDto) {
+		try {
+			if (!files.isEmpty()) {
+				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
+				if (fileDto == null) {
+					return "redirect:/admin/publications/modify/{idx}";
+				}
+				Long fileId = fileService.saveFile(fileDto); // 생성된 이미지파일 DB에 저장
+				if (fileId == null) {
+					return "redirect:/admin/publications/modify/{idx}";
+				}
+				publDto.setImgfileId(fileId);
+				publDto.setImgfileSrc(fileDto.getFilename());
+			} else
+				logger.info("[publications] 항목의 이미지가 없는 상태로 저장됩니다.");
+			int retCode = publicationsService.publicationsUpdate(publDto);
+			if (retCode == -1) {
+				logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");
+				return "/admin/publications/modify/{idx}";
+			} else {
+				logger.info(publDto.getIdx() + "이 새로운 퍼블리케이션 자료로 등록되었습니다.");
+				logger.info(retCode);
+				return "redirect:/publications?pid=" + retCode;
+			}
+
+		} catch (Exception e) {
+			// 이미지 파일 저장, publication 등록이 안되는 경우
+			logger.error("[Publications ERROR] Where: new, 정상적으로 생성되지 않았습니다.");
+			logger.error(e.getMessage());
+			e.getStackTrace();
+			return "redirect:/admin/publications/modify/{idx}";
 		}
+
 	}
 
 	// 퍼블리케이션 삭제

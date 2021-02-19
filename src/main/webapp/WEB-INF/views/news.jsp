@@ -20,7 +20,7 @@
 				<div class="col-md-12">
 					<ul class="breadcrumb">
 						<li><a href="index.html">Home</a></li>
-						<li><a href="#">Pages</a></li>
+						<li><a href="#">News</a></li>
 						<li>${category }</li>
 					</ul>
 				</div>
@@ -56,11 +56,11 @@
 				<div class="row">
 					<div class="post-block post-author clearfix">
 						<div class="author-details">
-							<c:if test="${news.imgfile == null }">
-								<img src="http://placehold.it/300x300" class="img-thumbnail pull-left" style="width: 600px; height: auto;">
+							<c:if test="${news.imgfileSrc == '' }">
+								<img src="http://placehold.it/300x300?text=NoImage" class="img-thumbnail pull-left" style="width: 600px; height: auto;">
 							</c:if>
-							<c:if test="${news.imgfile != null }">
-								<img src="${news.imgfile }" class="img-thumbnail pull-left" style="width: 600px; height: auto;">
+							<c:if test="${news.imgfileSrc != '' }">
+								<img src="${news.imgfileSrc }" class="img-thumbnail pull-left" style="width: 600px; height: auto;">
 							</c:if>
 							<p>
 								<strong class="name"><a style="font-size: 2em;">${news.title }</a></strong>

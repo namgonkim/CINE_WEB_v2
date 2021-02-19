@@ -29,19 +29,23 @@ public class Research {
 	@Column(name = "content")
 	private String content;
 	
-	@Column(name = "imgfile")
-	private String imgfile;
+	@Column(name = "imgfileId") // 이미지 번호
+	private Long imgfileId;
+	
+	@Column(name = "imgfileSrc") // 이미지 저장된 주소
+	private String imgfileSrc;
 	
 	@Column(name = "pid")
 	private int pid;
 	
 	
 	@Builder
-	public Research(Long idx, String title, String content, String imgfile, int pid) {
+	public Research(Long idx, String title, String content, Long imgfileId, String imgfileSrc, int pid) {
 		this.idx = idx;
 		this.title = title;
 		this.content = content;
-		this.imgfile = imgfile;
+		this.imgfileId = imgfileId;
+		this.imgfileSrc = imgfileSrc;
 		this.pid = pid;
 	}
 }

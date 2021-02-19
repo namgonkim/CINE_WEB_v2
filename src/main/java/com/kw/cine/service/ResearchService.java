@@ -28,9 +28,14 @@ public class ResearchService {
 		// 빌더를 통해 Entity 객체 데이터를 Dto에도 전달
 		for (Research researchEntity : rechList) {
 			// Dto 빌드
-			ResearchDto researchDto = ResearchDto.builder().idx(researchEntity.getIdx())
-					.title(researchEntity.getTitle()).content(researchEntity.getContent())
-					.imgfile(researchEntity.getImgfile()).pid(researchEntity.getPid()).build();
+			ResearchDto researchDto = ResearchDto.builder()
+					.idx(researchEntity.getIdx())
+					.title(researchEntity.getTitle())
+					.content(researchEntity.getContent())
+					.imgfileId(researchEntity.getImgfileId())
+					.imgfileSrc(researchEntity.getImgfileSrc())
+					.pid(researchEntity.getPid())
+					.build();
 			// 리스트에 추가
 			rechDtoList.add(researchDto);
 		}
@@ -49,10 +54,24 @@ public class ResearchService {
 	public ResearchDto getResearch(Long idx) {
 		// 팀원 중에서 수정할 팀원을 골라 가져옴
 		Optional<Research> researchEntityWrapper = researchRepo.findById(idx);
+		if(!researchEntityWrapper.isPresent()) {
+			return null;
+			/*
+			ResearchDto nonDto = ResearchDto.builder()
+					.retCode("409") // DB 충돌 오류 코드
+					.build();
+			return nonDto;
+			*/
+		}
 		Research researchEntity = researchEntityWrapper.get();
 
-		ResearchDto researchDto = ResearchDto.builder().idx(researchEntity.getIdx()).title(researchEntity.getTitle())
-				.content(researchEntity.getContent()).imgfile(researchEntity.getImgfile()).pid(researchEntity.getPid())
+		ResearchDto researchDto = ResearchDto.builder()
+				.idx(researchEntity.getIdx())
+				.title(researchEntity.getTitle())
+				.content(researchEntity.getContent())
+				.imgfileId(researchEntity.getImgfileId())
+				.imgfileSrc(researchEntity.getImgfileSrc())
+				.pid(researchEntity.getPid())
 				.build();
 
 		return researchDto;

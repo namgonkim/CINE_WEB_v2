@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.kw.cine.auth.service.MemberService;
+// import com.kw.cine.auth.service.MemberService;
 import com.kw.cine.dto.FilesDto;
 import com.kw.cine.dto.OurteamDto;
 import com.kw.cine.service.FileService;
@@ -40,9 +40,8 @@ public class OurteamController {
 	private static final Logger logger = LogManager.getLogger(OurteamController.class);
 
 	// @Autowired
-	OurteamService ourteamService;
-	MemberService memberService;
-	FileService fileService;
+	private OurteamService ourteamService;
+	private FileService fileService;
 
 	// 팀원 조회 페이지
 	@GetMapping("/ourteam")
@@ -152,11 +151,11 @@ public class OurteamController {
 			if(!files.isEmpty()) {
 				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
 				if(fileDto == null) {
-					return "redirect:/admin/ourteam/new";
+					return "redirect:/admin/ourteam/modify/{idx}";
 				}
 				Long fileId = fileService.saveFile(fileDto); // 생성된 파일 DB에 저장
 				if(fileId == null) {
-					return "redirect:/admin/ourteam/new";
+					return "redirect:/admin/ourteam/modify/{idx}";
 				}
 				teamDto.setImgfileId(fileId);
 				teamDto.setImgfileSrc(fileDto.getFilename());
@@ -176,7 +175,7 @@ public class OurteamController {
 			logger.error("시스템 에러, 정상적으로 이미지파일이 저장되지 않았습니다.");
 			logger.error(e.getMessage());
 			e.getStackTrace();
-			return "redirect:/admin/ourteam/new";
+			return "redirect:/admin/ourteam/modify/{idx}";
 		}
 	}
 

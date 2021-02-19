@@ -28,8 +28,14 @@ public class NewsService {
 		// 빌더를 통해 Entity 객체 데이터를 Dto에도 전달
 		for (News newsEntity : newsList) {
 			// Dto 빌드
-			NewsDto newsDto = NewsDto.builder().idx(newsEntity.getIdx()).title(newsEntity.getTitle())
-					.content(newsEntity.getContent()).imgfile(newsEntity.getImgfile()).pid(newsEntity.getPid()).build();
+			NewsDto newsDto = NewsDto.builder()
+					.idx(newsEntity.getIdx())
+					.title(newsEntity.getTitle())
+					.content(newsEntity.getContent())
+					.imgfileId(newsEntity.getImgfileId())
+					.imgfileSrc(newsEntity.getImgfileSrc())
+					.pid(newsEntity.getPid())
+					.build();
 			// 리스트에 추가
 			newsDtoList.add(newsDto);
 		}
@@ -48,10 +54,24 @@ public class NewsService {
 	public NewsDto getNews(Long idx) {
 		// 팀원 중에서 수정할 팀원을 골라 가져옴
 		Optional<News> newsEntityWrapper = newsRepo.findById(idx);
+		if(!newsEntityWrapper.isPresent()) {
+			return null;
+			/*
+			NewsDto nonDto = NewsDto.builder()
+					.retCode("409")
+					.build();
+			return nonDto;
+			*/
+		}
 		News newsEntity = newsEntityWrapper.get();
 
-		NewsDto newsDto = NewsDto.builder().idx(newsEntity.getIdx()).title(newsEntity.getTitle())
-				.content(newsEntity.getContent()).imgfile(newsEntity.getImgfile()).pid(newsEntity.getPid())
+		NewsDto newsDto = NewsDto.builder()
+				.idx(newsEntity.getIdx())
+				.title(newsEntity.getTitle())
+				.content(newsEntity.getContent())
+				.imgfileId(newsEntity.getImgfileId())
+				.imgfileSrc(newsEntity.getImgfileSrc())
+				.pid(newsEntity.getPid())
 				.build();
 
 		return newsDto;
