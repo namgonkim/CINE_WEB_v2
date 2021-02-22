@@ -56,17 +56,17 @@
 				<div class="row">
 					<div class="post-block post-author clearfix">
 						<div class="author-details">
-							<c:if test="${news.imgfileSrc == '' }">
+							<c:if test="${news.imgfileSrc == null }">
 								<img src="http://placehold.it/300x300?text=NoImage" class="img-thumbnail pull-left" style="width: 600px; height: auto;">
 							</c:if>
-							<c:if test="${news.imgfileSrc != '' }">
-								<img src="${news.imgfileSrc }" class="img-thumbnail pull-left" style="width: 600px; height: auto;">
+							<c:if test="${news.imgfileSrc != null }">
+								<img src="/images/${news.imgfileSrc }" class="img-thumbnail pull-left" style="width: 600px; height: auto;">
 							</c:if>
 							<p>
 								<strong class="name"><a style="font-size: 2em;">${news.title }</a></strong>
 							</p>
 							<br>
-							<p style="font-size: 1.2em;">${new.content }</p>
+							<p style="font-size: 1.2em;">${news.content }</p>
 						</div>
 					</div>
 					<sec:authorize access="hasRole('ROLE_ADMIN')">

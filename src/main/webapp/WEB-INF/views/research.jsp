@@ -69,7 +69,12 @@
 							<p>${research.content }</p>
 						</div>
 						<div class="col-md-6 col-md-push-1 padding-0">
-							<img class=" img-responsive" src="${research.imgfile }" alt="" />
+							<c:if test="${research.imgfileSrc == null}">
+								<img class=" img-responsive" src="http://placehold.it/200x200?text=No Image" alt="" />
+							</c:if>
+							<c:if test="${research.imgfileSrc != null}">
+								<img class=" img-responsive" src="/images/${research.imgfileSrc }" alt="" />
+							</c:if>
 						</div>
 					</div>
 				</div>

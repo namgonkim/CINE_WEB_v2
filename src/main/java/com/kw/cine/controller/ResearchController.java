@@ -172,6 +172,8 @@ public class ResearchController {
 	// 리서치 삭제
 	@DeleteMapping("/admin/research/delete/{idx}")
 	public String researchDelete(@PathVariable("idx") Long idx) {
+		ResearchDto researchDto = researchService.getResearch(idx);
+		fileService.fileDelete(researchDto.getImgfileId(), researchDto.getImgfileSrc());
 		int retCode = researchService.researchDelete(idx);
 		if (retCode == -1) {
 			logger.error("시스템 에러, 팀원 삭제가 정상적이지 못했습니다.");

@@ -162,6 +162,8 @@ public class NewsController {
 	// 리서치 삭제
 	@DeleteMapping("/admin/news/delete/{idx}")
 	public String newsDelete(@PathVariable("idx") Long idx) {
+		NewsDto newsDto = newsService.getNews(idx);
+		fileService.fileDelete(newsDto.getImgfileId(), newsDto.getImgfileSrc());
 		int retCode = newsService.newsDelete(idx);
 		if (retCode == -1) {
 			logger.error("시스템 에러, 팀원 삭제가 정상적이지 못했습니다.");

@@ -69,21 +69,9 @@ public class PublicationsController {
 
 	// 새 퍼블리케이션 등록 POST
 	@PostMapping("/admin/publications/new")
-	public String savePublicationsNew(@RequestParam("imgfile") MultipartFile files, PublicationsDto publDto) {
+	public String savePublicationsNew(PublicationsDto publDto) {
 		try {
-			if (!files.isEmpty()) {
-				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
-				if (fileDto == null) {
-					return "redirect:/admin/publications/new";
-				}
-				Long fileId = fileService.saveFile(fileDto); // 생성된 이미지파일 DB에 저장
-				if (fileId == null) {
-					return "redirect:/admin/publications/new";
-				}
-				publDto.setImgfileId(fileId);
-				publDto.setImgfileSrc(fileDto.getFilename());
-			} else
-				logger.info("[publications] 항목의 이미지가 없는 상태로 저장됩니다.");
+
 			int retCode = publicationsService.saveNew(publDto);
 			if (retCode == -1) {
 				logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");
@@ -125,21 +113,9 @@ public class PublicationsController {
 
 	// 퍼블리케이션 수정 POST
 	@PutMapping("/admin/publications/modify/{idx}")
-	public String publicationsUpdate(@RequestParam("imgfile") MultipartFile files, PublicationsDto publDto) {
+	public String publicationsUpdate(PublicationsDto publDto) {
 		try {
-			if (!files.isEmpty()) {
-				FilesDto fileDto = fileService.createFilePathAndSave(files); // 파일 이름, 경로 지정 및 생성
-				if (fileDto == null) {
-					return "redirect:/admin/publications/modify/{idx}";
-				}
-				Long fileId = fileService.saveFile(fileDto); // 생성된 이미지파일 DB에 저장
-				if (fileId == null) {
-					return "redirect:/admin/publications/modify/{idx}";
-				}
-				publDto.setImgfileId(fileId);
-				publDto.setImgfileSrc(fileDto.getFilename());
-			} else
-				logger.info("[publications] 항목의 이미지가 없는 상태로 저장됩니다.");
+
 			int retCode = publicationsService.publicationsUpdate(publDto);
 			if (retCode == -1) {
 				logger.error("시스템 에러, 정상적으로 등록되지 않았습니다.");

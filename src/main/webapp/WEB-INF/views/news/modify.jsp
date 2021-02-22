@@ -49,7 +49,7 @@
 					<input type="hidden" name="idx" value="${newsDto.idx}" />
 
 					<!-- image upload -->
-					<div class="col-md-10">
+					<div class="col-md-2">
 						<label for="inputFile" class=""><strong>이미지</strong></label>
 						<div class="">
 							<div class="custom-file" id="inputFile">
@@ -65,12 +65,13 @@
 									<button type="button" class="btn btn-dark btn-sm" onclick="Image_delete();">삭제하기</button>
 									<script>
 												function Image_delete() {
+													alert("삭제하시겠습니까?");
 													var imgdata = document.querySelector("div#image_container");
 													for(var i=0;i<imgdata.childNodes.length;i++){
 														imgdata.removeChild(imgdata.childNodes[i]);
 													}
 												}
-											</script>
+									</script>
 								</div>
 								<br>
 							</div>
@@ -88,12 +89,12 @@
 					                		}
 					                		// 미리 볼 수 있도록 해당 위치에 이미지 어트리뷰트 추가
 					                		reader.onload = function(event) {
-					                			
+					                			// class="img-thumbnail pull-left" style="width: 600px; height: auto;"
 					                			var img = document.createElement("img");
-					                			img.setAttribute("class", "img-responsive");
+					                			img.setAttribute("class", "img-thumbnail pull-left");
 					                			img.setAttribute("src", event.target.result);
-					                			img.setAttribute("width", "560px");
-					                			img.setAttribute("height", "431px");
+					                			img.setAttribute("width", "600px");
+					                			img.setAttribute("height", "auto");
 					                			
 					                			var imgdata = document.querySelector("div#image_container");
 					                			var imgdataNode = imgdata.childNodes;
