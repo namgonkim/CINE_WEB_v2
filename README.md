@@ -11,7 +11,7 @@
  
  ### Want to
  - JSP를 React로
- - MSA활용 [사실상 힘들 것 같다.]
+
  - 데이터 저장 클라우드에 (AWS EC2 서버 & RDS는 고려중)
 
 
